@@ -1,7 +1,6 @@
 # Making Unpaired Drifting Work for Single-Step Speech Enhancement — code
 
-Companion repository for the paper *"Making Unpaired Drifting Work for
-Single-Step Speech Enhancement"* (submitted to ICASSP 2027).
+Companion repository for the paper *"Unsupervised Speech Enhancement via Drifting"* (submitted to ICASSP 2027).
 
 **Audio demo:** [d-caviedes.github.io/unpaired-drifting-se](https://d-caviedes.github.io/unpaired-drifting-se/) — the four external systems against our two headline systems on VoiceBank--DEMAND.
 
