@@ -23,6 +23,7 @@ body{
   font:16px/1.55 Georgia,'Times New Roman',serif;
 }
 .wrap{max-width:1060px; margin:0 auto; padding:2.2rem 1.2rem 4rem}
+header{text-align:center}
 header h1{
   font-size:1.7rem; line-height:1.25; margin:0 0 .3rem; text-wrap:balance;
 }
@@ -30,8 +31,8 @@ header h1{
 .authors{font-family:system-ui,sans-serif; font-size:.92rem; margin:.2rem 0 .8rem}
 .affil{color:var(--mut); font-size:.82rem}
 .abstract{background:var(--card); border:1px solid var(--line); border-radius:12px;
-  padding:1rem 1.2rem; margin:1.2rem 0; max-width:75ch}
-.abstract h2{margin:0 0 .4rem; font-size:1rem}
+  padding:1rem 1.4rem; margin:1.4rem auto; max-width:75ch; text-align:justify}
+.abstract h2{margin:0 0 .4rem; font-size:1rem; text-align:center}
 .abstract p{margin:0; font-size:.92rem}
 .links a{
   display:inline-block; margin-right:.7rem; color:var(--accent);
@@ -63,7 +64,9 @@ h2{font-size:1.15rem; margin:2.2rem 0 .4rem; font-family:system-ui,sans-serif}
   margin:0 0 .6rem; font-family:ui-monospace,Menlo,Consolas,monospace;
   font-size:.95rem; color:var(--accent); font-weight:600;
 }
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(225px,1fr)); gap:.55rem .9rem}
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:.55rem .9rem}
+@media (max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
 .cell{padding:.35rem .45rem .55rem; border-radius:8px}
 .cell.ours{background:var(--ours-bg); box-shadow:inset 3px 0 0 var(--accent)}
 .cell label{
@@ -104,18 +107,6 @@ Rate on VoiceBank&ndash;DEMAND falls to 10.1% (unprocessed: 11.7%), speaker
 similarity recovers from 0.490 to 0.879, and the recipe transfers in part to
 dereverberation on WSJ0-REVERB: content improves, rendering quality does not.</p>
 </div>
-
-<p class="note">
-Our systems are trained <strong>without any paired data</strong>: the training
-set is the corpus of noisy mixtures plus a separate clean-speech bank
-(DNS-2020) with no correspondence between them, and enhancement is a
-<strong>single forward pass</strong> (no iterative sampler). The systems demoed
-here condition the drifting force on the input: <em>anchors&nbsp;+
-key&nbsp;(&beta;=1)</em>, <em>anchors&nbsp;+ gated key</em> (a per-frame key
-strength driven by a CTC recognizer&rsquo;s confidence, training-time only),
-and <em>keyed&nbsp;&beta;=1 + corrector</em> (a second small network trained on the
-generator&rsquo;s own renders of the clean corpus, raising quality without paired data).
-</p>
 
 <h2>Listen</h2>
 <p class="small">All clips are loudness-equalized to the same RMS (-26 dBFS) for fair listening; the paper's metrics were computed on the unmodified files. Input SNR measured per utterance against the clean reference.</p>
