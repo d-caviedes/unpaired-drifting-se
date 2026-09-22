@@ -3,6 +3,8 @@
 Companion repository for the paper *"Making Unpaired Drifting Work for
 Single-Step Speech Enhancement"* (submitted to ICASSP 2027).
 
+**Audio demo:** [d-caviedes.github.io/unpaired-drifting-se](https://d-caviedes.github.io/unpaired-drifting-se/) — the four external systems against our two headline systems on VoiceBank--DEMAND.
+
 **Status: work in progress.** The full release is prepared and pending
 internal open-source approval; it will appear here by camera-ready.
 
