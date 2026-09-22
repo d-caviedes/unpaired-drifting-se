@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Making Unpaired Drifting Work — audio demo</title>
+<title>Unsupervised Speech Enhancement via Drifting — audio demo</title>
 <style>
 :root{
   --bg:#fdfdfb; --card:#ffffff; --ink:#2b2b2b; --mut:#6b6b66;
@@ -27,6 +27,12 @@ header h1{
   font-size:1.7rem; line-height:1.25; margin:0 0 .3rem; text-wrap:balance;
 }
 .subtitle{color:var(--mut); margin:0 0 1rem}
+.authors{font-family:system-ui,sans-serif; font-size:.92rem; margin:.2rem 0 .8rem}
+.affil{color:var(--mut); font-size:.82rem}
+.abstract{background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:1rem 1.2rem; margin:1.2rem 0; max-width:75ch}
+.abstract h2{margin:0 0 .4rem; font-size:1rem}
+.abstract p{margin:0; font-size:.92rem}
 .links a{
   display:inline-block; margin-right:.7rem; color:var(--accent);
   font-family:system-ui,sans-serif; font-size:.85rem; text-decoration:none;
@@ -72,12 +78,32 @@ footer{margin-top:3rem; border-top:1px solid var(--line); padding-top:1rem}
 <body>
 <div class="wrap">
 <header>
-  <h1>Making Unpaired Drifting Work for Single-Step Speech Enhancement</h1>
+  <h1>Unsupervised Speech Enhancement via Drifting</h1>
+  <p class="authors">Diego Caviedes-Nozal<sup>1</sup>, Liang Xu<sup>2</sup>, Rasmus Kongsgaard Olsson<sup>1</sup>, W. Bastiaan Kleijn<sup>2</sup><br><span class="affil"><sup>1</sup>GN A/S, Denmark &nbsp;&nbsp; <sup>2</sup>Victoria University of Wellington, New Zealand</span></p>
   <p class="subtitle">Audio demo — denoising on VoiceBank–DEMAND (16&nbsp;kHz). Submitted to ICASSP&nbsp;2027.</p>
   <p class="links">
     <a href="https://github.com/d-caviedes/unpaired-drifting-se">code repository</a>
   </p>
 </header>
+
+<div class="abstract">
+<h2>Abstract</h2>
+<p>This paper addresses unsupervised speech enhancement in the unpaired
+setting using drifting methods, where training relies on separate collections
+of degraded and clean audio without corresponding pairs. While recent drifting
+approaches enable unpaired training, they do so at a heavy cost: because the
+objective optimizes only a marginal prior over clean speech, the enhancer
+gradually loses the input&rsquo;s linguistic content and speaker identity. To
+fix this, we introduce <em>input-conditioned drifting</em>. We preserve the
+pull of the clean corpus while re-tethering the output to the degraded input
+via two mechanisms: an <em>anchor</em> encoder supplies the missing likelihood
+by pulling toward the input&rsquo;s features, and a <em>key</em> encoder
+conditions the prior by re-weighting retrieved frames. Neither requires labels
+or paired data. Using a training-free encoder selection criterion, Word Error
+Rate on VoiceBank&ndash;DEMAND falls to 10.1% (unprocessed: 11.7%), speaker
+similarity recovers from 0.490 to 0.879, and the recipe transfers in part to
+dereverberation on WSJ0-REVERB: content improves, rendering quality does not.</p>
+</div>
 
 <p class="note">
 Our systems are trained <strong>without any paired data</strong>: the training
