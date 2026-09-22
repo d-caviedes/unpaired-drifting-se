@@ -85,7 +85,7 @@ set is the corpus of noisy mixtures plus a separate clean-speech bank
 (DNS-2020) with no correspondence between them, and enhancement is a
 <strong>single forward pass</strong> (no iterative sampler). The systems demoed
 here condition the drifting force on the input: <em>anchors&nbsp;+
-key&nbsp;(&beta;=4)</em>, <em>anchors&nbsp;+ gated key</em> (a per-frame key
+key&nbsp;(&beta;=1)</em>, <em>anchors&nbsp;+ gated key</em> (a per-frame key
 strength driven by a CTC recognizer&rsquo;s confidence, training-time only),
 and <em>keyed&nbsp;&beta;=1 + corrector</em> (a second small network trained on the
 generator&rsquo;s own renders of the clean corpus, raising quality without paired data).
@@ -112,7 +112,7 @@ showcase; the table is the full test set.</p>
 <tr><td>SelfSE</td><td>masking</td><td>1</td><td>1.5</td><td class="best">9.3 (74/37)</td><td>0.860</td><td class="best">3.18</td><td class="best">4.13</td><td class="best">2.98</td><td class="best">0.943</td></tr>
 <tr><td>DiffUSEEN</td><td>resynthesis</td><td>30</td><td>5.2</td><td>10.7 (83/37)</td><td>0.865</td><td>3.05</td><td>3.79</td><td>2.67</td><td>0.933</td></tr>
 <tr><td>DriftSE (unpaired)</td><td>resynthesis</td><td>1</td><td>4.3</td><td>22.5 (152/285)</td><td>0.569</td><td>3.10</td><td>3.73</td><td>1.73</td><td>0.609</td></tr>
-<tr class="ours"><td>ours: anchors + key, &beta;=4</td><td>resynthesis</td><td>1</td><td>1.7</td><td>10.1 (69/49)</td><td>0.879</td><td>2.76</td><td>3.59</td><td>2.23</td><td>0.926</td></tr>
+<tr class="ours"><td>ours: anchors + key, &beta;=1</td><td>resynthesis</td><td>1</td><td>1.7</td><td>10.9 (67/52)</td><td>0.859</td><td>2.91</td><td>3.82</td><td>2.43</td><td>0.925</td></tr>
 <tr class="ours"><td>ours: anchors + gated key</td><td>resynthesis</td><td>1</td><td>1.7</td><td>10.5 (73/42)</td><td>0.865</td><td>2.90</td><td>3.78</td><td>2.42</td><td>0.926</td></tr>
 <tr class="ours"><td>ours: keyed &beta;=1 + corrector</td><td>resynthesis</td><td>1</td><td>2.5</td><td>11.9 (83/40)</td><td>0.842</td><td>3.14</td><td>4.03</td><td>2.47</td><td>0.919</td></tr>
 </tbody>
@@ -136,7 +136,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_021.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_021.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_021.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_021.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p232_021.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_021.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p232_021.wav"></audio></div>
   </div>
@@ -150,7 +150,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_047.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_047.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_047.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_047.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p232_047.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_047.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p232_047.wav"></audio></div>
   </div>
@@ -164,7 +164,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_099.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_099.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_099.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_099.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p232_099.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_099.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p232_099.wav"></audio></div>
   </div>
@@ -178,7 +178,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_150.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_150.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_150.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_150.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p232_150.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_150.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p232_150.wav"></audio></div>
   </div>
@@ -192,7 +192,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_310.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_310.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_310.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_310.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p232_310.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_310.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p232_310.wav"></audio></div>
   </div>
@@ -206,7 +206,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_049.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_049.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_049.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_049.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p257_049.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_049.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p257_049.wav"></audio></div>
   </div>
@@ -220,7 +220,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_118.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_118.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_118.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_118.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p257_118.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_118.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p257_118.wav"></audio></div>
   </div>
@@ -234,7 +234,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_162.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_162.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_162.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_162.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p257_162.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_162.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p257_162.wav"></audio></div>
   </div>
@@ -248,7 +248,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_216.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_216.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_216.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_216.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p257_216.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_216.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p257_216.wav"></audio></div>
   </div>
@@ -262,7 +262,7 @@ unpaired drifting system whose content loss motivated this work.
     <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_306.wav"></audio></div>
     <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_306.wav"></audio></div>
     <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_306.wav"></audio></div>
-    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_306.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=1</label><audio controls preload="none" src="audio/ours_b1/p257_306.wav"></audio></div>
     <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_306.wav"></audio></div>
     <div class="cell ours"><label>Ours: keyed β=1 + corrector</label><audio controls preload="none" src="audio/ours_corr/p257_306.wav"></audio></div>
   </div>
