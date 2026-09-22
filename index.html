@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making Unpaired Drifting Work — audio demo</title>
+<style>
+:root{
+  --bg:#fdfdfb; --card:#ffffff; --ink:#2b2b2b; --mut:#6b6b66;
+  --accent:#127c6e; --accent-soft:#e2f2ee; --line:#e3e3df;
+  --ours-bg:#f2faf8; --head-bg:#f6f6f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#161715; --card:#1e201d; --ink:#e8e8e4; --mut:#a3a39c;
+    --accent:#4fb3a2; --accent-soft:#1e3833; --line:#33352f;
+    --ours-bg:#1c2b27; --head-bg:#22241f;
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 Georgia,'Times New Roman',serif;
+}
+.wrap{max-width:1060px; margin:0 auto; padding:2.2rem 1.2rem 4rem}
+header h1{
+  font-size:1.7rem; line-height:1.25; margin:0 0 .3rem; text-wrap:balance;
+}
+.subtitle{color:var(--mut); margin:0 0 1rem}
+.links a{
+  display:inline-block; margin-right:.7rem; color:var(--accent);
+  font-family:system-ui,sans-serif; font-size:.85rem; text-decoration:none;
+  border:1px solid var(--accent); border-radius:999px; padding:.15rem .75rem;
+}
+.links a:hover{background:var(--accent-soft)}
+p.note{max-width:62ch}
+.small{font-size:.85rem; color:var(--mut)}
+
+.tablebox{overflow-x:auto; border:1px solid var(--line); border-radius:10px; margin:1.4rem 0 2.2rem}
+table{border-collapse:collapse; width:100%; min-width:720px;
+  font-family:system-ui,sans-serif; font-size:.82rem}
+th,td{padding:.42rem .6rem; text-align:right; white-space:nowrap;
+  border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums}
+th{background:var(--head-bg); color:var(--mut); font-weight:600; position:sticky; top:0}
+td:first-child,th:first-child{text-align:left}
+tr.ours td{background:var(--ours-bg)}
+tr.ours td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+tr:last-child td{border-bottom:none}
+.best{font-weight:700; color:var(--accent)}
+
+h2{font-size:1.15rem; margin:2.2rem 0 .4rem; font-family:system-ui,sans-serif}
+.utt{
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:1rem 1.1rem .6rem; margin:1rem 0;
+}
+.utt h3{
+  margin:0 0 .6rem; font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.95rem; color:var(--accent); font-weight:600;
+}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(225px,1fr)); gap:.55rem .9rem}
+.cell{padding:.35rem .45rem .55rem; border-radius:8px}
+.cell.ours{background:var(--ours-bg); box-shadow:inset 3px 0 0 var(--accent)}
+.cell label{
+  display:block; font-family:system-ui,sans-serif; font-size:.78rem;
+  color:var(--mut); margin-bottom:.2rem;
+}
+.cell.ours label{color:var(--accent); font-weight:600}
+audio{width:100%; height:32px}
+footer{margin-top:3rem; border-top:1px solid var(--line); padding-top:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Making Unpaired Drifting Work for Single-Step Speech Enhancement</h1>
+  <p class="subtitle">Audio demo — denoising on VoiceBank–DEMAND (16&nbsp;kHz). Submitted to ICASSP&nbsp;2027.</p>
+  <p class="links">
+    <a href="https://github.com/d-caviedes/unpaired-drifting-se">code repository</a>
+  </p>
+</header>
+
+<p class="note">
+Our systems are trained <strong>without any paired data</strong>: the training
+set is the corpus of noisy mixtures plus a separate clean-speech bank
+(DNS-2020) with no correspondence between them, and enhancement is a
+<strong>single forward pass</strong> (no iterative sampler). The two systems
+demoed here condition the drifting force on the input: <em>anchors&nbsp;+
+key&nbsp;(&beta;=4)</em> and <em>anchors&nbsp;+ gated key</em> (a per-frame key
+strength driven by a CTC recognizer&rsquo;s confidence, training-time only).
+</p>
+
+<h2>Numbers first (complete 824-utterance test set, one evaluation pipeline)</h2>
+<p class="small">All systems rescored in our pipeline from the authors&rsquo;
+released checkpoints or audio. WER in percent from wav2vec2-base-960h against
+the clean-reference reads; D/I are word deletions/insertions; ECAPA is cosine
+speaker similarity to the clean reference; DNSMOS is OVRL. Arrows give the
+better direction. The audio below is 10 utterances of the standard 20-utterance
+showcase; the table is the full test set.</p>
+
+<div class="tablebox">
+<table>
+<thead>
+<tr><th>system</th><th>type</th><th>steps</th><th>params (M)</th>
+<th>WER&darr; (D/I)</th><th>ECAPA&uarr;</th><th>DNSMOS&uarr;</th>
+<th>SCOREQ&uarr;</th><th>PESQ&uarr;</th><th>STOI&uarr;</th></tr>
+</thead>
+<tbody>
+<tr><td>noisy input</td><td>—</td><td>—</td><td>—</td><td>11.7</td><td>0.888</td><td>2.70</td><td>3.31</td><td>1.97</td><td>0.921</td></tr>
+<tr><td>MetricGAN-U</td><td>masking</td><td>1</td><td>1.9</td><td>16.1 (116/58)</td><td>0.667</td><td>2.81</td><td>3.37</td><td>2.13</td><td>0.889</td></tr>
+<tr><td>SelfSE</td><td>masking</td><td>1</td><td>1.5</td><td class="best">9.3 (74/37)</td><td>0.860</td><td class="best">3.18</td><td class="best">4.13</td><td class="best">2.98</td><td class="best">0.943</td></tr>
+<tr><td>DiffUSEEN</td><td>resynthesis</td><td>30</td><td>5.2</td><td>10.7 (83/37)</td><td>0.865</td><td>3.05</td><td>3.79</td><td>2.67</td><td>0.933</td></tr>
+<tr><td>DriftSE (unpaired)</td><td>resynthesis</td><td>1</td><td>4.3</td><td>22.5 (152/285)</td><td>0.569</td><td>3.10</td><td>3.73</td><td>1.73</td><td>0.609</td></tr>
+<tr class="ours"><td>ours: anchors + key, &beta;=4</td><td>resynthesis</td><td>1</td><td>1.7</td><td>10.1 (69/49)</td><td>0.879</td><td>2.76</td><td>3.59</td><td>2.23</td><td>0.926</td></tr>
+<tr class="ours"><td>ours: anchors + gated key</td><td>resynthesis</td><td>1</td><td>1.7</td><td>10.5 (73/42)</td><td>0.865</td><td>2.90</td><td>3.78</td><td>2.42</td><td>0.926</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="note small">
+Reading guide: ours are the only <em>resynthesis</em> systems that beat the
+input&rsquo;s WER in one step. SelfSE (masking) leads WER and quality overall;
+DiffUSEEN needs 30 sampler steps and 5.2M parameters. DriftSE is the prior
+unpaired drifting system whose content loss motivated this work.
+</p>
+
+<h2>Listen</h2>
+<div class="utt">
+  <h3>p232_021 <span style="color:var(--mut);font-weight:400">(male speaker p232)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p232_021.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p232_021.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p232_021.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_021.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_021.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_021.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_021.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_021.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p232_047 <span style="color:var(--mut);font-weight:400">(male speaker p232)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p232_047.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p232_047.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p232_047.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_047.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_047.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_047.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_047.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_047.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p232_099 <span style="color:var(--mut);font-weight:400">(male speaker p232)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p232_099.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p232_099.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p232_099.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_099.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_099.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_099.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_099.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_099.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p232_150 <span style="color:var(--mut);font-weight:400">(male speaker p232)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p232_150.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p232_150.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p232_150.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_150.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_150.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_150.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_150.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_150.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p232_310 <span style="color:var(--mut);font-weight:400">(male speaker p232)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p232_310.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p232_310.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p232_310.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p232_310.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p232_310.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p232_310.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p232_310.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p232_310.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p257_049 <span style="color:var(--mut);font-weight:400">(female speaker p257)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p257_049.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p257_049.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p257_049.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_049.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_049.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_049.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_049.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_049.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p257_118 <span style="color:var(--mut);font-weight:400">(female speaker p257)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p257_118.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p257_118.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p257_118.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_118.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_118.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_118.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_118.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_118.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p257_162 <span style="color:var(--mut);font-weight:400">(female speaker p257)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p257_162.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p257_162.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p257_162.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_162.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_162.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_162.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_162.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_162.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p257_216 <span style="color:var(--mut);font-weight:400">(female speaker p257)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p257_216.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p257_216.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p257_216.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_216.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_216.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_216.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_216.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_216.wav"></audio></div>
+  </div>
+</div>
+<div class="utt">
+  <h3>p257_306 <span style="color:var(--mut);font-weight:400">(female speaker p257)</span></h3>
+  <div class="grid">
+    <div class="cell"><label>Clean reference</label><audio controls preload="none" src="audio/clean/p257_306.wav"></audio></div>
+    <div class="cell"><label>Noisy input</label><audio controls preload="none" src="audio/noisy/p257_306.wav"></audio></div>
+    <div class="cell"><label>MetricGAN-U</label><audio controls preload="none" src="audio/metricgan_u/p257_306.wav"></audio></div>
+    <div class="cell"><label>SelfSE</label><audio controls preload="none" src="audio/selfse/p257_306.wav"></audio></div>
+    <div class="cell"><label>DiffUSEEN</label><audio controls preload="none" src="audio/diffuseen/p257_306.wav"></audio></div>
+    <div class="cell"><label>DriftSE (unpaired)</label><audio controls preload="none" src="audio/driftse/p257_306.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + key, β=4</label><audio controls preload="none" src="audio/ours_b4/p257_306.wav"></audio></div>
+    <div class="cell ours"><label>Ours: anchors + gated key</label><audio controls preload="none" src="audio/ours_gated/p257_306.wav"></audio></div>
+  </div>
+</div>
+
+<footer class="small">
+<p>External renders: MetricGAN-U and DiffUSEEN generated from the
+authors&rsquo; released checkpoints; SelfSE and DriftSE are the
+authors&rsquo; released audio. Clean/noisy utterances from the
+VoiceBank&ndash;DEMAND test set (Valentini-Botinhao et al., CC&nbsp;BY&nbsp;4.0).
+All trademarks and audio remain with their owners; this page is a
+non-commercial research demo.</p>
+</footer>
+</div>
+</body>
+</html>
