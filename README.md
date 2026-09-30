@@ -1,6 +1,7 @@
-# Making Unpaired Drifting Work for Single-Step Speech Enhancement — code
+# Unsupervised Speech Enhancement via Drifting — code
 
-Companion repository for the paper *"Unsupervised Speech Enhancement via Drifting"* (submitted to ICASSP 2027).
+Companion repository for the paper *"Unsupervised Speech Enhancement via Drifting"*
+([arXiv:2609.34662](https://arxiv.org/abs/2609.34662), submitted to ICASSP 2027).
 
 **Audio demo:** [d-caviedes.github.io/unpaired-drifting-se](https://d-caviedes.github.io/unpaired-drifting-se/) — the four external systems against our two headline systems on VoiceBank--DEMAND.
 
@@ -29,6 +30,20 @@ wav2vec2-base-960h) and download automatically; the WavCube encoder used by
 the denoising bank will be available from the authors on request. Datasets
 are the public VoiceBank–DEMAND, WSJ0 (LDC) rendered with the SGMSE+
 reverberation recipe, and DNS-2020 clean speech.
+
+## Citation
+
+```bibtex
+@misc{caviedesnozal2026unsupervised,
+  title         = {Unsupervised Speech Enhancement via Drifting},
+  author        = {Caviedes-Nozal, Diego and Xu, Liang and Olsson, Rasmus Kongsgaard and Kleijn, W. Bastiaan},
+  year          = {2026},
+  eprint        = {2609.34662},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SD},
+  url           = {https://arxiv.org/abs/2609.34662}
+}
+```
 
 ## Contact
 
